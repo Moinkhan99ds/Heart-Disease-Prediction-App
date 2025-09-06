@@ -33,7 +33,8 @@ if st.button("Predict"):
     # Arrange features as per training dataset
     features = np.array([[age, sex_val, cp, bp, chol, fbs, ekg,
                           max_hr, exang, st_depression, slope, ca, thal]])
- prediction = model.predict(features)
+                        
+    prediction = model.predict(features)
 
     # Display result
     if prediction[0] == 1:
