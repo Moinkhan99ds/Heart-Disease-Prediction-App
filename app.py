@@ -5,39 +5,36 @@ import numpy as np
 # Load trained model
 model = pickle.load(open("model.pkl", "rb"))
 
-# Title
 st.title("❤️ Heart Disease Prediction App")
-
-st.write("Fill in the details below to predict if the patient has heart disease.")
+st.write("Fill the patient details below and check the risk of heart disease")
 
 # Input fields
-age = st.number_input("Age", min_value=1, max_value=120, value=30)
+age = st.number_input("Age", 1, 120, 30)
 sex = st.selectbox("Sex", ("Male", "Female"))
-cp = st.number_input("Chest Pain Type (0-3)", min_value=0, max_value=3, value=0)
-bp = st.number_input("Resting Blood Pressure", min_value=50, max_value=250, value=120)
-chol = st.number_input("Cholesterol", min_value=100, max_value=600, value=200)
+cp = st.selectbox("Chest Pain Type (1=typical angina, 2=atypical, 3=non-anginal, 4=asymptomatic)", (1, 2, 3, 4))
+bp = st.number_input("Resting Blood Pressure (in mm Hg)", 50, 250, 120)
+chol = st.number_input("Serum Cholesterol (mg/dl)", 100, 600, 200)
 fbs = st.selectbox("Fasting Blood Sugar > 120 mg/dl", (0, 1))
-ekg = st.number_input("Resting ECG Results (0-2)", min_value=0, max_value=2, value=1)
-max_hr = st.number_input("Maximum Heart Rate", min_value=50, max_value=250, value=150)
-exang = st.selectbox("Exercise Induced Angina", (0, 1))
-st_depression = st.number_input("ST Depression", min_value=0.0, max_value=10.0, value=1.0, format="%.1f")
-slope = st.number_input("Slope of ST Segment (0-2)", min_value=0, max_value=2, value=1)
-ca = st.number_input("Number of Vessels Colored by Fluoroscopy (0-3)", min_value=0, max_value=3, value=0)
-thal = st.number_input("Thallium (0-3)", min_value=0, max_value=3, value=1)
+ekg = st.selectbox("Resting EKG results (0, 1, 2)", (0, 1, 2))
+max_hr = st.number_input("Maximum Heart Rate Achieved", 50, 250, 150)
+ex_angina = st.selectbox("Exercise Induced Angina (0=No, 1=Yes)", (0, 1))
+st_depression = st.number_input("ST Depression Induced by Exercise", 0.0, 10.0, 1.0)
+slope = st.selectbox("Slope of Peak Exercise ST Segment (1, 2, 3)", (1, 2, 3))
+num_vessels = st.selectbox("Number of Major Vessels Colored by Flouroscopy (0-3)", (0, 1, 2, 3))
+thal = st.selectbox("Thallium (3=normal, 6=fixed defect, 7=reversible defect)", (3, 6, 7))
 
-# Prediction button
+# Convert categorical value
+sex = 1 if sex == "Male" else 0
+
+# Prediction
 if st.button("Predict"):
-    # Encode sex as numeric
-    sex_val = 1 if sex == "Male" else 0
-
-    # Arrange features as per training dataset
-    features = np.array([[age, sex_val, cp, bp, chol, fbs, ekg,
-                          max_hr, exang, st_depression, slope, ca, thal]])
-                        
-    prediction = model.predict(features)
-
-    # Display result
-    if prediction[0] == 1:
-        st.error("🚨 The person is likely to have Heart Disease.")
+    features = np.array([[age, sex, cp, bp, chol, fbs, ekg, max_hr,
+                          ex_angina, st_depression, slope, num_vessels, thal]])
+    
+    prediction = model.predict(features)[0]
+    
+    if prediction == 1:
+        st.error("⚠️ High risk of Heart Disease")
     else:
-        st.success("✅ The person is unlikely to have Heart Disease.")
+        st.success("✅ Low risk of Heart Disease")
+
