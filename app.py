@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 
 # Load trained model
-model = pickle.load(open("model.pkl", "rb"))
+model7 = pickle.load(open("model7.pkl", "rb"))
 
 st.title("❤️ Heart Disease Prediction App")
 st.write("Fill the patient details below and check the risk of heart disease")
@@ -31,7 +31,7 @@ if st.button("Predict"):
     features = np.array([[age, sex, cp, bp, chol, fbs, ekg, max_hr,
                           ex_angina, st_depression, slope, num_vessels, thal]])
     
-    prediction = model.predict(features)[0]
+    prediction = model7.predict(features)[0]
     
     if prediction == 1:
         st.error("⚠️ High risk of Heart Disease")
